@@ -1,0 +1,64 @@
+<app-navbar></app-navbar>
+
+<div class="row justify-content-md-center bg-dark h-100 min-vh-100">
+    <div class="bg-light h-50 w-25 mx-auto my-auto">
+        <form [formGroup]="registerCompany" (ngSubmit)="companyRegister(registerCompany)" class="mx-auto mt-1 w-100 p-5">
+            <div class="form-group text-center">
+                <h1 class="fw-bold">Register Company</h1>
+            </div>
+            <div class="form-group m-3">
+                <label class=" mb-2 ">Company Name</label>
+                <input type="text" placeholder="Enter Company Name" formControlName="companyName" class="form-control bg-dark text-light rounded-corner py-2" 
+                    [ngClass]="{ 'is-invalid': submitted && f['companyName'].errors }"/>
+                    <div *ngIf="submitted && f['companyName'].errors" class="invalid-feedback">
+                        <div *ngIf="f['companyName'].errors['required']">Company Name is required</div>
+                    </div>
+            </div>
+            <div class="form-group m-3">
+                <label class=" mb-2">Company CEO</label>
+                <input type="text" placeholder="Enter Company CEO" formControlName="companyCEO" class="form-control bg-dark text-light rounded-corner py-2"  
+                [ngClass]="{ 'is-invalid': submitted && f['companyCEO'].errors }"/>
+                    <div *ngIf="submitted && f['companyCEO'].errors" class="invalid-feedback">
+                        <div *ngIf="f['companyCEO'].errors['required']">Company CEO is required</div>
+                    </div>
+            </div>
+            <div class="form-group m-3">
+                <label class=" mb-2">Company Turnover [More than 100,000,000]</label>
+                <input type="number" value="100000000" placeholder="100,000,000" min=100000000 formControlName="companyTurnOver"
+                    class="form-control bg-dark text-light rounded-corner py-2"
+                    [ngClass]="{ 'is-invalid': submitted && f['companyTurnOver'].errors }" />
+                    <div *ngIf="submitted && f['companyTurnOver'].errors" class="invalid-feedback">
+                        <div *ngIf="f['companyTurnOver'].errors['required']">Company TurnOver is required</div>
+                        <div *ngIf="f['companyTurnOver'].errors['min']">
+                            Company TurnOver More than 100,000,000
+                        </div>
+                      </div>
+            </div>
+            <div class="form-group m-3">
+                <label class=" mb-2">Company Website</label>
+                <input type="url" placeholder="Enter Company Website" formControlName="companyWebsite" class="form-control bg-dark text-light rounded-corner py-2" 
+                    [ngClass]="{ 'is-invalid': submitted && f['companyWebsite'].errors }"/>
+                    <div *ngIf="submitted && f['companyWebsite'].errors" class="invalid-feedback">
+                        <div *ngIf="f['companyWebsite'].errors['required']"> Company Website is required</div>
+                        <div *ngIf="f['companyWebsite'].errors['pattern']"> Company Website is not Valid</div>
+                    </div>
+            </div>
+            <div class="form-group m-3">
+                <label class=" mb-2">Company Listed in Stock Exchange</label>
+                <select class="form-select bg-dark text-light rounded-corner py-2" formControlName="companyStockExchange" aria-placeholder="Select Stock Exchange" aria-label="Select Stock Exchange" 
+                [ngClass]="{ 'is-invalid': submitted && f['companyStockExchange'].errors }">
+                    <option value="" disabled selected>Select Stock Exchange</option>
+                    <option value="BSE">BSE</option>
+                    <option value="NSE">NSE</option>
+                </select>
+                <div *ngIf="submitted && f['companyStockExchange'].errors" class="invalid-feedback">
+                    <div *ngIf="f['companyStockExchange'].errors['required']">StockExchange is required</div>
+                </div>
+            </div>
+
+            <div class="form-group text-center mt-5 mb-2">
+                <button type="Submit" class="btn btn-success">Register Company</button>
+            </div>
+        </form>
+    </div>
+</div>

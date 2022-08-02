@@ -1,0 +1,189 @@
+<app-navbar></app-navbar>
+
+
+<!-- Button trigger modal -->
+<div class="container-fluid text-light bg-dark h-100 min-vh-100" id="main">
+  <div class="row justify-content-md-center bg-dark h-100 min-vh-100">
+    <div class="bg-light text-dark h-50 w-50 mx-auto my-5">
+      <form [formGroup]="stockDetail" (ngSubmit)="getStock(stockDetail)" class="mx-auto mt-5 w-100">
+        <div class="row">
+          <div class="form-group text-center">
+            <h1 class="fw-bold">Stock Details</h1>
+          </div>
+        </div>
+        <div class="row justify-content-md-center">
+          <div class="col-6">
+            <div class="form-group m-3">
+              <label class="form-label mb-2"> Select to view Stock details of company</label>
+              <select class="form-select bg-dark text-light rounded-corner py-2" formControlName="companyID"
+                aria-placeholder="Select Company Stock" aria-label="Select Company Stock"
+                [ngClass]="{ 'is-invalid': submitted && f['companyID'].errors }">
+                <option value="" disabled selected>Select Company Stock</option>
+                <option *ngFor="let company of companiesList;" value="{{company.companyID}}">{{company.companyName}}</option>
+              </select>
+              <div *ngIf="submitted && f['companyID'].errors" class="invalid-feedback">
+                <div *ngIf="f['companyID'].errors['required']">Company Name is required</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="col">
+            <div class="form-group m-3 form-outline datepicker" data-mdb-format="mmm dd, yyyy">
+              <label for="startDate" class="form-label">Select starting date</label>
+              <input type="date" class="form-control rounded-corner py-2" formControlName="startDate" id="startDate"
+                placeholder=" " [ngClass]="{ 'is-invalid': submitted && f['startDate'].errors }">
+              <div *ngIf="submitted && f['startDate'].errors" class="invalid-feedback">
+                <div *ngIf="f['startDate'].errors['required']">Start Date is required</div>
+              </div>
+            </div>
+          </div>
+          <div class="col">
+            <div class="form-group m-3 form-outline datepicker" data-mdb-format="mmm dd, yyyy">
+              <label for="endDate" class="form-label">Select ending date</label>
+              <input type="date" class="form-control rounded-corner py-2" formControlName="endDate" id="endDate"
+                placeholder=" " [ngClass]="{ 'is-invalid': submitted && f['endDate'].errors }">
+              <div *ngIf="submitted && f['endDate'].errors" class="invalid-feedback">
+                <div *ngIf="f['endDate'].errors['required']">End Date is required</div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+        <div class="row">
+          <div class="col">
+            <div class="form-group text-center my-4">
+              <button type="submit" class="btn btn-success rounded-3" data-bs-toggle="modal" data-bs-target="#centralModalFluid">Get Stock Details</button>
+            </div>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<!-- Modal -->
+<div class="modal fade" id="centralModalFluid" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+  aria-hidden="true">
+  <div class="modal-dialog modal-xl " role="document">
+    <!--Content-->
+    <div class="modal-content">
+      <!--Header-->
+      <div class="modal-header w-100">
+        <h4 class="modal-title text-center mx-auto" id="myModalLabel">Stock Details</h4>
+      </div>
+      <!--Body-->
+      <div class="modal-body">
+        <div *ngIf="stockPresent == true">
+          <table class="table  table-bordered border-light table-dark mt-3">
+            <thead>
+              <tr class="text-center">
+                <th scope="col">Stock ID</th>
+                <th scope="col">Company ID</th>
+                <th scope="col">Stock Name</th>
+                <th scope="col"> Latest Stock Price</th>
+                
+              </tr>
+            </thead>
+            <tbody *ngFor="let stock of stockdetails">
+              <tr class="text-center">
+                <th scope="row">{{stock.stockId}}</th>
+                <td>{{stock.companyId}}</td>
+                <td>{{stock.stockName}}</td>
+                <td>{{stock.stockPrice}}</td>
+              </tr>
+            </tbody>
+          </table>
+          <!-- MAX,MIN and Average of Stock Price -->
+          <div class="modal-header w-100">
+            <h4 class="modal-title text-center mx-auto" id="myModalLabel">Stock Details</h4>
+          </div>
+          <table class="table  table-bordered border-light table-dark mt-3">
+            <thead>
+              <tr class="text-center">
+                <th scope="col">Minimum Stock Price</th>
+                <th scope="col">Maximum Stock Price</th>
+                <th scope="col">Average Stock Price</th>
+                
+              </tr>
+            </thead>
+            <tbody>
+              <tr class="text-center">
+                <td>{{min}}</td>
+                <td>{{max}}</td>
+                <td>{{avg}}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <div *ngIf="stockPresent == false">
+            <div class="bg-dark h-50 w-50 mx-auto my-auto"> 
+              <h3 class="text-danger"> Please Add stock for Company to get Stock details </h3>
+            </div>
+        </div>
+      </div>
+      <!--Footer-->
+      <div class="modal-footer">
+        <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Close</button>
+      </div>
+    </div>
+    <!--/.Content-->
+  </div>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<script>
+  $(function () {
+
+    var from_$input = $('#startDate').pickadate(),
+      from_picker = from_$input.pickadate('picker')
+
+    var to_$input = $('#endDate').pickadate(),
+      to_picker = to_$input.pickadate('picker')
+
+
+    // Check if there’s a “from” or “to” date to start with.
+    if (from_picker.get('value')) {
+      to_picker.set('min', from_picker.get('select'))
+    }
+    if (to_picker.get('value')) {
+      from_picker.set('max', to_picker.get('select'))
+    }
+
+    // When something is selected, update the “from” and “to” limits.
+    from_picker.on('set', function (event) {
+      if (event.select) {
+        to_picker.set('min', from_picker.get('select'))
+      }
+      else if ('clear' in event) {
+        to_picker.set('min', false)
+      }
+    })
+    to_picker.on('set', function (event) {
+      if (event.select) {
+        from_picker.set('max', to_picker.get('select'))
+      }
+      else if ('clear' in event) {
+        from_picker.set('max', false)
+      }
+    })
+
+  });
+</script>

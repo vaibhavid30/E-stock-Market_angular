@@ -1,0 +1,164 @@
+<app-navbar></app-navbar>
+
+<!-- Button trigger modal -->
+<div class="container-fluid text-light bg-dark h-100 min-vh-100" id="main">
+  <div class="row">
+    <div class="col text-center">
+      <h1 class="text-center pt-5 bg-dark text-light my-0">All Companies</h1>
+    </div>
+  </div>
+  <div class="row justify-content-md-center w-75 mx-auto my-auto">
+    <div class="col">
+      <a class="btn btn-success" routerLink="/user/companyregister" role="button"><b>ADD COMPANY</b></a>
+    </div>
+  </div>
+  <div class="row justify-content-md-center w-75 mx-auto my-auto">
+    <div class="col">
+      <table class="table table-bordered border-light table-dark mt-3">
+        <thead>
+          <tr class="text-center">
+            <th>#</th>
+            <th>Company ID</th>
+            <th>Company Name</th>
+            <th>Action</th>
+          </tr>
+        </thead>
+        <tbody *ngIf="companiesList && companiesList.length else nocompaniesList">
+          <tr class="text-center" *ngFor="let company of companiesList;let i=index">
+            <th scope="row">{{i+1}}</th>
+            <td>{{company.companyID}}</td>
+            <td>{{company.companyName}}</td>
+            <td class="text-center">
+              <button class="btn btn-warning mx-2" data-bs-toggle="modal" data-bs-target="#centralModalFluid"
+                (click)="companyDetail(company.companyID)">View Company details</button>
+              <button class="btn btn-danger mx-2" (click)="deleteCompany(company.companyID)">Delete Company</button>
+            </td>
+          </tr>
+        </tbody>
+        <tr>
+          <ng-template #nocompaniesList>
+            <th colspan="6" class="text-danger text-center py-5">No Company Found !!</th>
+          </ng-template>
+        </tr>
+      </table>
+    </div>
+  </div>
+</div>
+
+<!-- Modal -->
+<div class="modal fade" id="centralModalFluid" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+  aria-hidden="true">
+  <div class="modal-dialog modal-xl " role="document">
+    <!--Content-->
+    <div class="modal-content">
+      <!--Header-->
+      <div class="modal-header w-100">
+        <h4 class="modal-title text-center mx-auto" id="myModalLabel">Company Details</h4>
+        <!-- <button type="button" class="btn-close mx-2" data-bs-dismiss="modal" aria-label="Close"></button> -->
+      </div>
+      <!--Body-->
+      <div class="modal-body">
+        <table class="table  table-bordered border-light table-dark mt-3">
+          <thead>
+            <tr class="text-center">
+              <th scope="col">Company ID</th>
+              <th scope="col">Company Name</th>
+              <th scope="col">Company CEO</th>
+              <th scope="col">Company Turn-Over</th>
+              <th scope="col">Company Website</th>
+              <th scope="col">Company Stock Exchange</th>
+            </tr>
+          </thead>
+          <tbody *ngFor="let company of companydetails">
+            <tr class="text-center">
+              <th scope="row">{{company.companyID}}</th>
+              <td>{{company.companyName}}</td>
+              <td>{{company.companyCEO}}</td>
+              <td>{{company.companyTurnOver}}</td>
+              <td>{{company.companyWebsite}}</td>
+              <td>{{company.companyStockExchange}}</td>
+            </tr>
+          </tbody>
+          <tr>
+            <ng-template #nocompanydetails>
+              <th colspan="7" class="text-danger text-center py-5">No Company Details Found !!</th>
+            </ng-template>
+          </tr>
+        </table>
+      </div>
+      <div class="modal-header w-100">
+        <h4 class="modal-title text-center mx-auto" id="myModalLabel">Stock Details</h4>
+      </div>
+      <div class="modal-body">
+        <div *ngIf="stockPresent == true">
+          <table class="table  table-bordered border-light table-dark mt-3">
+            <thead>
+              <tr class="text-center">
+                <th scope="col">Stock ID</th>
+                <th scope="col">Company ID</th>
+                <th scope="col">Stock Name</th>
+                <th scope="col">Stock Price</th>
+                <th>Action</th>
+              </tr>
+            </thead>
+            <tbody *ngFor="let stock of stockdetails">
+              <tr class="text-center">
+                <th scope="row">{{stock.stockId}}</th>
+                <td>{{stock.companyId}}</td>
+                <td>{{stock.stockName}}</td>
+                <!-- <td>{{stock.stockPrice}}</td> -->
+                <td>
+                  <form [formGroup]="updateStockPrice"  class="mx-auto mt-1 w-100 p-5">
+                    <label class=" mb-2 text-lighta">Stock Price - {{stock.stockPrice}}</label>
+
+                    <input type="number" step=".01" placeholder="{{stock.stockPSrice}}" formControlName="stockPrice"
+                      class="form-control rounded-corner py-2"
+                      [ngClass]="{ 'is-invalid': submitted && f['stockPrice'].errors }" />
+                    <div *ngIf="submitted && f['stockPrice'].errors" class="invalid-feedback">
+                      <div *ngIf="f['stockPrice'].errors['required']">Update Stock Price</div>
+                    </div>
+                  </form>
+                </td>
+                <td>
+                  <button class="btn btn-success mt-4" type="submit" data-bs-dismiss="modal" (click)="updatePrice(stock.stockId)">Update Price</button>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <div *ngIf="stockPresent == false">
+            <div class="bg-dark h-50 w-50 mx-auto my-auto"> 
+                  <form [formGroup]="addStock" (ngSubmit)="addNewStock()" class="mx-auto mt-1 w-100 p-5">
+                    <div class="form-group m-3">
+                    <label class=" mb-2 text-lighta">Stock Name</label>
+                    <input type="text" placeholder="Enter Stock Name" formControlName="stockName"
+                      class="form-control bg-dark text-light rounded-corner py-2"
+                      [ngClass]="{ 'is-invalid': submitted && fc['stockName'].errors }" />
+                    <div *ngIf="submitted && fc['stockName'].errors" class="invalid-feedback">
+                      <div *ngIf="fc['stockName'].errors['required']">Stock Name required</div>
+                    </div>
+                    </div>
+                    <div class="form-group m-3">
+                    <label class=" mb-2 text-light">Stock Price</label>
+                    <input type="number" step=".01" placeholder="Enter Stock Price" formControlName="stockPrice"
+                      class="form-control bg-dark text-light rounded-corner py-2"
+                      [ngClass]="{ 'is-invalid': submitted && fc['stockPrice'].errors }" />
+                    <div *ngIf="submitted && fc['stockPrice'].errors" class="invalid-feedback">
+                      <div *ngIf="fc['stockPrice'].errors['required']">Stock Price required</div>
+                    </div>
+                    </div>
+                    <div class="text-center">
+                      <button class="btn btn-success mt-4 mx-auto">Add Stock</button>
+                    </div>
+                </form>
+                </div>
+        </div>
+      </div>
+      <!--Footer-->
+      <div class="modal-footer">
+        <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Close</button>
+      </div>
+    </div>
+    <!--/.Content-->
+  </div>
+</div>
